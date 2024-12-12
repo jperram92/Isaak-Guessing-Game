@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog
-from PIL import Image, ImageTk, ImageSequence, ImageDraw, ImageFont
+from tkinter import messagebox
+from tkinter import filedialog, simpledialog
+from PIL import Image, ImageTk, ImageSequence
 
 class IntroductionScreen:
     def __init__(self, master):
@@ -12,21 +13,34 @@ class IntroductionScreen:
         self.bg_canvas = tk.Canvas(master, width=900, height=850, bg="#ADD8E6")  # Light Blue Color
         self.bg_canvas.pack(fill=tk.BOTH, expand=True)
 
-        # Create frames for layout
-        self.title_frame = tk.Frame(self.bg_canvas, bg="#ADD8E6")
-        self.title_frame.pack(fill=tk.BOTH, expand=True)
+        # Add background image
+        self.add_background_image()
 
-        self.title_label = tk.Label(self.title_frame, text="Welcome to Toddler Fun Time!", font=("Arial", 24, "bold"), bg="#ADD8E6", fg="purple")
-        self.title_label.pack(pady=100)
+        # Button to enter the game
+        self.enter_button = tk.Button(self.bg_canvas, text="Let's Play!", font=("Arial", 18, "bold"), command=self.enter_game, bg="yellow", fg="red")
+        self.enter_button.pack(pady=200)
 
-        self.enter_button = tk.Button(self.title_frame, text="Hit Enter Game!", font=("Arial", 18, "bold"), command=self.enter_game, bg="yellow", fg="red")
-        self.enter_button.pack(pady=20)
+    def add_background_image(self):
+        """Add a cute background image for toddlers to enjoy."""
+        try:
+            # Use the correct file path to load the background image
+            background_img = Image.open(r"C:\Users\james\OneDrive\Desktop\Isaak Guessing Game\FarmAnimals.png")  # Update path if needed
+            background_img = background_img.resize((900, 850), Image.Resampling.LANCZOS)  # Resize to fit the canvas
+            bg_image = ImageTk.PhotoImage(background_img)
+
+            # Create the background image on the canvas (drawn behind other widgets)
+            self.bg_canvas.create_image(0, 0, image=bg_image, anchor="nw")
+            self.bg_canvas.image = bg_image  # Keep a reference to avoid garbage collection
+
+        except Exception as e:
+            messagebox.showerror("Image Load Error", f"Could not load background image: {e}")
 
     def enter_game(self):
-        """Transition to the main game."""
-        self.title_frame.pack_forget()  # Hide the title screen
+        """Transition to the main game screen."""
+        self.bg_canvas.pack_forget()  # Hide the introduction screen
         game_window = tk.Toplevel(self.master)  # Open a new window for the game
         game = ToddlerGame(game_window)  # Start the main game screen
+
 
 class ToddlerGame:
     def __init__(self, master):
