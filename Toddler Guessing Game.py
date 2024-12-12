@@ -2,6 +2,32 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
 from PIL import Image, ImageTk, ImageSequence, ImageDraw, ImageFont
 
+class IntroductionScreen:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Welcome to Toddler Fun Time")
+        self.master.geometry("900x850")  # Adjusted height and width for better layout
+
+        # Create the background canvas with a light blue background
+        self.bg_canvas = tk.Canvas(master, width=900, height=850, bg="#ADD8E6")  # Light Blue Color
+        self.bg_canvas.pack(fill=tk.BOTH, expand=True)
+
+        # Create frames for layout
+        self.title_frame = tk.Frame(self.bg_canvas, bg="#ADD8E6")
+        self.title_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.title_label = tk.Label(self.title_frame, text="Welcome to Toddler Fun Time!", font=("Arial", 24, "bold"), bg="#ADD8E6", fg="purple")
+        self.title_label.pack(pady=100)
+
+        self.enter_button = tk.Button(self.title_frame, text="Hit Enter Game!", font=("Arial", 18, "bold"), command=self.enter_game, bg="yellow", fg="red")
+        self.enter_button.pack(pady=20)
+
+    def enter_game(self):
+        """Transition to the main game."""
+        self.title_frame.pack_forget()  # Hide the title screen
+        game_window = tk.Toplevel(self.master)  # Open a new window for the game
+        game = ToddlerGame(game_window)  # Start the main game screen
+
 class ToddlerGame:
     def __init__(self, master):
         self.master = master
@@ -145,7 +171,6 @@ class ToddlerGame:
                     custom_image = ImageTk.PhotoImage(custom_image)
                     image_label.config(image=custom_image)
                     image_label.image = custom_image  # Keep reference to avoid garbage collection
-               
                 # Prompt user for a caption
                 caption = simpledialog.askstring("Caption", "Enter a caption for the image:")
                 if caption:
@@ -224,7 +249,8 @@ class ToddlerGame:
             index = 0
         label.after(50, self.update_gif, label, frames, index)
 
+
 if __name__ == "__main__":
     root = tk.Tk()
-    game = ToddlerGame(root)
+    intro_screen = IntroductionScreen(root)  # Show the introduction screen first
     root.mainloop()
